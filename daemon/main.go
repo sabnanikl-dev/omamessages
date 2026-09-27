@@ -296,7 +296,9 @@ func serve(args []string) {
 	logger.Info().Msg("Shutting down")
 	hub.Stop()
 	_ = ln.Close()
-	_ = os.Remove(socketPath())
+	if path, err := socketPath(); err == nil {
+		_ = os.Remove(path)
+	}
 }
 
 func parseProviders(list string) []core.ProviderID {

@@ -39,7 +39,17 @@ func (l *fakeLinker) Stop() { l.mu.Lock(); l.stopped = true; l.mu.Unlock() }
 
 func newLink(t *testing.T) (*linkFlow, *fakeLinker, *core.Store) {
 	t.Helper()
-	dir := t.TempDir()
+	// Not t.TempDir: a flow that just failed may still be writing its status
+	// file when the test ends, which t.TempDir's cleanup reports as an error.
+	dir, err := os.MkdirTemp("", "walink")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		for i := 0; i < 50 && os.RemoveAll(dir) != nil; i++ {
+			time.Sleep(10 * time.Millisecond)
+		}
+	})
 	s := core.NewStore(dir, nil)
 	l := &fakeLinker{items: make(chan whatsmeow.QRChannelItem)}
 	return &linkFlow{store: s, dir: dir, link: l, spawn: func(fn func()) { go fn() }}, l, s

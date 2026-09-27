@@ -7,10 +7,10 @@ import (
 	"errors"
 	"net"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
 	"omarchy-omamessages/core"
@@ -57,26 +57,28 @@ type Response struct {
 	Result any    `json:"result,omitempty"`
 }
 
-func socketPath() string {
-	dir := os.Getenv("XDG_RUNTIME_DIR")
-	if dir == "" {
-		dir = os.TempDir()
-	}
-	return filepath.Join(dir, "omarchy-omamessages.sock")
-}
-
 // listen binds the control socket. A live daemon already bound there makes
 // this return errAlreadyRunning so a second `serve` exits quietly.
 var errAlreadyRunning = errors.New("daemon already running")
 
 func listen() (net.Listener, error) {
-	path := socketPath()
+	path, err := socketPath()
+	if err != nil {
+		return nil, err
+	}
 	if conn, err := net.DialTimeout("unix", path, 500*time.Millisecond); err == nil {
+		mine := samePeer(conn)
 		_ = conn.Close()
+		if !mine {
+			return nil, errForeignPeer
+		}
 		return nil, errAlreadyRunning
 	}
 	_ = os.Remove(path)
+	// Owner-only from the moment it exists, not after a chmod.
+	old := syscall.Umask(0o077)
 	ln, err := net.Listen("unix", path)
+	syscall.Umask(old)
 	if err != nil {
 		return nil, err
 	}
@@ -97,6 +99,10 @@ func serveSocket(ln net.Listener, hub *Hub, quit chan<- struct{}) {
 		}
 		go func() {
 			defer conn.Close()
+			if !samePeer(conn) {
+				logger.Warn().Msg("Refused a control connection from another user")
+				return
+			}
 			_ = conn.SetDeadline(time.Now().Add(90 * time.Second))
 			line, err := bufio.NewReader(conn).ReadBytes('\n')
 			if err != nil && len(line) == 0 {
@@ -244,11 +250,19 @@ func handle(hub *Hub, req Request, requestQuit func()) Response {
 
 // call sends one request to a running daemon.
 func call(req Request) (Response, error) {
-	conn, err := net.DialTimeout("unix", socketPath(), 2*time.Second)
+	path, err := socketPath()
+	if err != nil {
+		return Response{}, err
+	}
+	conn, err := net.DialTimeout("unix", path, 2*time.Second)
 	if err != nil {
 		return Response{}, errors.New("daemon is not running")
 	}
 	defer conn.Close()
+	// Never hand codes, passwords or cookies to someone else's process.
+	if !samePeer(conn) {
+		return Response{}, errForeignPeer
+	}
 	_ = conn.SetDeadline(time.Now().Add(90 * time.Second))
 	data, _ := json.Marshal(req)
 	if _, err := conn.Write(append(data, '\n')); err != nil {
