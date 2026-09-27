@@ -9,7 +9,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -28,18 +27,17 @@ import (
 
 var logger zerolog.Logger = zerolog.Nop()
 
-// factories lists every service this binary can run. `serve --providers`
-// picks which of them start. The fake is added only when asked for, so it
-// doesn't show up in Accounts. Google Messages is added at serve time: live,
-// or as a read-only preview of the old plugin (`--preview gmessages`, or
-// whenever the old daemon is still running, see liveGMessages).
 // demoFactories is set only in `-tags demo` builds (main_demo.go): made-up
 // services for screenshots, started with `serve --demo`.
 var demoFactories func() map[core.ProviderID]core.Factory
 
+// factories lists every service this binary can run. `serve --providers`
+// picks which of them start. The fake is added only when asked for, so it
+// doesn't show up in Accounts.
 var factories = map[core.ProviderID]core.Factory{
-	telegram.ID: telegram.New,
-	whatsapp.ID: whatsapp.New,
+	gmessages.ID: gmessages.New,
+	telegram.ID:  telegram.New,
+	whatsapp.ID:  whatsapp.New,
 }
 
 func stateDir() string {
@@ -64,9 +62,8 @@ func cacheDir() string {
 func usage() {
 	fmt.Fprintln(os.Stderr, `usage: omamessagesd <command> [args]
 
-  serve [--providers a,b] [--preview gmessages] [--verbose] [--no-notify]
-                                    run the daemon (exits at once if one is already running);
-                                    --preview shows the old plugin's cached state read-only
+  serve [--providers a,b] [--verbose] [--no-notify]
+                                    run the daemon (exits at once if one is already running)
   status                            print each service's status and the unread total
   connect <service> [method]        start signing in (method picks an alternative, e.g. qr)
   connect-input <service> [value]   answer the current step; value is read from stdin if omitted
@@ -226,7 +223,7 @@ func main() {
 func serve(args []string) {
 	verbose := false
 	notify := true
-	var enabled, preview []core.ProviderID
+	var enabled []core.ProviderID
 	demo := false
 	for i := 0; i < len(args); i++ {
 		switch a := args[i]; {
@@ -241,11 +238,6 @@ func serve(args []string) {
 			enabled = parseProviders(args[i])
 		case strings.HasPrefix(a, "--providers="):
 			enabled = parseProviders(strings.TrimPrefix(a, "--providers="))
-		case a == "--preview" && i+1 < len(args):
-			i++
-			preview = parseProviders(args[i])
-		case strings.HasPrefix(a, "--preview="):
-			preview = parseProviders(strings.TrimPrefix(a, "--preview="))
 		}
 	}
 	level := zerolog.InfoLevel
@@ -276,22 +268,10 @@ func serve(args []string) {
 		}
 		factories = demoFactories()
 		enabled = []core.ProviderID{core.GMessages, core.Telegram, core.WhatsApp}
-		preview = nil
-	}
-	for _, id := range preview {
-		if id != gmessages.ID {
-			logger.Warn().Str("provider", string(id)).Msg("Only gmessages has a preview, ignoring")
-			continue
-		}
-		factories[id] = gmessages.NewPreview(gmessages.OldStateDir())
 	}
 	for _, id := range enabled {
 		if id == fake.ID {
 			factories[id] = fake.New
-			continue
-		}
-		if id == gmessages.ID && factories[id] == nil && !demo {
-			factories[id] = liveGMessages(dir)
 			continue
 		}
 		if _, ok := factories[id]; !ok {
@@ -305,7 +285,7 @@ func serve(args []string) {
 	quit := make(chan struct{})
 	go serveSocket(ln, hub, quit)
 	hub.Start(context.Background())
-	logger.Info().Interface("providers", enabled).Interface("preview", preview).Msg("Started")
+	logger.Info().Interface("providers", enabled).Msg("Started")
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
@@ -348,37 +328,4 @@ func pickFiles(args []string) {
 	for _, p := range paths {
 		fmt.Println(p)
 	}
-}
-
-// liveGMessages is the Google Messages factory for a live start. Two clients
-// on one Google pairing fight, so while the older gmessages plugin's daemon still
-// answers on its socket this falls back to the read-only preview. Otherwise
-// it brings the old pairing across (once) and runs the real provider.
-func liveGMessages(stateDir string) core.Factory {
-	if oldGMessagesRunning() {
-		logger.Error().Err(errOldDaemon).Msg("Running Google Messages as a read-only preview; disable the older gmessages plugin to take it over")
-		return gmessages.NewPreview(gmessages.OldStateDir())
-	}
-	migrated, err := MigrateFromGMessages(gmessages.OldStateDir(), filepath.Join(stateDir, string(gmessages.ID)))
-	switch {
-	case err != nil:
-		logger.Error().Err(err).Msg("Could not bring the old Google Messages pairing across")
-	case migrated:
-		logger.Info().Str("from", gmessages.OldStateDir()).Msg("Brought the Google Messages pairing across from the old plugin")
-	}
-	return gmessages.New
-}
-
-// oldGMessagesRunning reports whether the old plugin's daemon answers.
-func oldGMessagesRunning() bool {
-	dir := os.Getenv("XDG_RUNTIME_DIR")
-	if dir == "" {
-		dir = os.TempDir()
-	}
-	conn, err := net.DialTimeout("unix", filepath.Join(dir, "omarchy-gmessages.sock"), 500*time.Millisecond)
-	if err != nil {
-		return false
-	}
-	_ = conn.Close()
-	return true
 }

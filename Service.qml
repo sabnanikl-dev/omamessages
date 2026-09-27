@@ -18,8 +18,6 @@ Item {
   readonly property string stateDir: (Quickshell.env("XDG_STATE_HOME") || (Quickshell.env("HOME") + "/.local/state")) + "/omarchy/omamessages"
   readonly property bool notifications: setting("notifications", true) !== false
   readonly property string enabledProviders: String(setting("providers", "gmessages,telegram,whatsapp"))
-  // Until cutover, Google Messages is a read-only view of the old plugin's cache.
-  readonly property string previewProviders: String(setting("preview", ""))
 
   // Mirrored from state.json
   property bool loaded: false
@@ -72,11 +70,6 @@ Item {
     return id
   }
 
-  function isPreview(providerId) {
-    var p = provider(providerId)
-    return !!(p && p.extra && p.extra.preview)
-  }
-
   // A service can take replies once it's connected.
   function canSend(convId) {
     var p = provider(providerOf(convId))
@@ -100,11 +93,9 @@ Item {
   function summaryLine(now) {
     if (binaryMissing) return Model.statusLine("missing")
     if (!loaded) return Model.statusLine("starting")
-    var on = providers.filter(function(p) { return p.enabled && !(p.extra && p.extra.preview) })
-    var previews = providers.filter(function(p) { return p.enabled && p.extra && p.extra.preview })
-    var tail = previews.length > 0 ? " · " + previews.map(function(p) { return p.name }).join(", ") + " read-only" : ""
-    if (on.length === 0) return previews.length > 0 ? tail.substring(3) : "No services enabled"
-    return summaryFor(on, now) + tail
+    var on = providers.filter(function(p) { return p.enabled })
+    if (on.length === 0) return "No services enabled"
+    return summaryFor(on, now)
   }
 
 
@@ -120,7 +111,7 @@ Item {
 
   Process {
     id: daemon
-    command: ["sh", "-c", "mkdir -p \"$1\" && exec \"$2\" serve --providers \"$3\" --preview \"$4\"" + (root.notifications ? "" : " --no-notify") + " >> \"$1/daemon.log\" 2>&1", "sh", root.stateDir, root.binary, root.enabledProviders, root.previewProviders]
+    command: ["sh", "-c", "mkdir -p \"$1\" && exec \"$2\" serve --providers \"$3\"" + (root.notifications ? "" : " --no-notify") + " >> \"$1/daemon.log\" 2>&1", "sh", root.stateDir, root.binary, root.enabledProviders]
     running: false
     onExited: function(code, statusCode) {
       if (code === 0) return // another instance already owns the socket

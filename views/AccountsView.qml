@@ -37,7 +37,7 @@ ColumnLayout {
   // The row's action: "connect" | "continue" | "disconnect" | "".
   function actionFor(row) {
     var p = row.p
-    if (!p || !p.enabled || (p.extra && p.extra.preview)) return ""
+    if (!p || !p.enabled) return ""
     if (p.status === "pairing") return "continue"
     if (p.status === "disconnected") return "connect"
     return "disconnect"
@@ -61,7 +61,6 @@ ColumnLayout {
     if (row.later) return "Coming later"
     if (!p) return "Not in this build yet"
     if (!p.enabled) return "Turned off in settings"
-    if (p.extra && p.extra.preview) return "Read-only preview until cutover" + (p.account ? " · " + p.account : "")
     switch (p.status) {
       case "connected": {
         var parts = ["Connected"]

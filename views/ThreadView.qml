@@ -285,7 +285,6 @@ ColumnLayout {
       Layout.fillWidth: true
       placeholderText: thread.canSend && thread.staged.length > 0 ? "Caption (optional)"
         : thread.canSend ? "Message on " + thread.serviceName
-        : thread.conv && thread.gm.isPreview(thread.conv.provider) ? thread.serviceName + " is read-only until cutover"
         : thread.serviceName + " is not connected"
       enabled: thread.canSend && !thread.sending
       foreground: thread.ui.foreground
