@@ -1,0 +1,273 @@
+{
+  "conversations": [
+    {
+      "id": "11",
+      "name": "Ada Lovelace",
+      "lastMessage": "Are you coming Sunday?",
+      "lastFromMe": false,
+      "lastSender": "Ada",
+      "lastTs": 1790000000123,
+      "unread": true,
+      "isGroup": false,
+      "type": "sms",
+      "archived": false,
+      "pinned": true,
+      "participants": [
+        {
+          "id": "p-me",
+          "name": "+15550000000",
+          "number": "+15550000000",
+          "isMe": true
+        },
+        {
+          "id": "p-ada",
+          "name": "Ada Lovelace",
+          "number": "+15551112222",
+          "isMe": false
+        }
+      ],
+      "outgoingId": "p-me"
+    },
+    {
+      "id": "22",
+      "name": "Grace Hopper, Linus, (555) 888-9999, +15550001111",
+      "lastMessage": "merged, thanks!",
+      "lastFromMe": true,
+      "lastSender": "You",
+      "lastTs": 1790000500000,
+      "unread": false,
+      "isGroup": true,
+      "type": "rcs",
+      "archived": false,
+      "pinned": false,
+      "participants": [
+        {
+          "id": "p-me",
+          "name": "+15550000000",
+          "number": "+15550000000",
+          "isMe": true
+        },
+        {
+          "id": "p-grace",
+          "name": "Grace Hopper",
+          "number": "+15553334444",
+          "isMe": false
+        },
+        {
+          "id": "p-linus",
+          "name": "Linus",
+          "number": "+15556667777",
+          "isMe": false
+        },
+        {
+          "id": "p-fmt",
+          "name": "(555) 888-9999",
+          "number": "+15558889999",
+          "isMe": false
+        },
+        {
+          "id": "p-num",
+          "name": "+15550001111",
+          "number": "+15550001111",
+          "isMe": false
+        }
+      ],
+      "outgoingId": "p-me"
+    },
+    {
+      "id": "33",
+      "name": "Conversation",
+      "lastMessage": "",
+      "lastFromMe": false,
+      "lastSender": "",
+      "lastTs": 1780000000000,
+      "unread": false,
+      "isGroup": false,
+      "type": "sms",
+      "archived": true,
+      "pinned": false,
+      "participants": [
+        {
+          "id": "p-me",
+          "name": "+15550000000",
+          "number": "+15550000000",
+          "isMe": true
+        }
+      ]
+    }
+  ],
+  "messages": [
+    {
+      "id": "m1",
+      "ts": 1790000000123,
+      "fromMe": false,
+      "sender": "Ada Lovelace",
+      "senderId": "p-ada",
+      "text": "Are you coming Sunday?",
+      "status": "received"
+    },
+    {
+      "id": "m2",
+      "ts": 1790000100000,
+      "fromMe": true,
+      "sender": "+15550000000",
+      "senderId": "p-me",
+      "text": "yes\nsee you",
+      "status": "sent"
+    },
+    {
+      "id": "m3",
+      "ts": 1790000200000,
+      "fromMe": true,
+      "sender": "+15550000000",
+      "senderId": "p-me",
+      "text": "",
+      "status": "delivered"
+    },
+    {
+      "id": "m4",
+      "ts": 1790000300000,
+      "fromMe": true,
+      "sender": "+15550000000",
+      "senderId": "p-me",
+      "text": "read one",
+      "status": "read"
+    },
+    {
+      "id": "m5",
+      "ts": 1790000400000,
+      "fromMe": true,
+      "sender": "+15550000000",
+      "senderId": "p-me",
+      "text": "sending",
+      "status": "sending"
+    },
+    {
+      "id": "m6",
+      "ts": 1790000500000,
+      "fromMe": true,
+      "sender": "+15550000000",
+      "senderId": "p-me",
+      "text": "failed",
+      "status": "failed",
+      "statusText": "No service"
+    },
+    {
+      "id": "m7",
+      "ts": 1790000600000,
+      "fromMe": true,
+      "sender": "+15550000000",
+      "senderId": "p-me",
+      "text": "",
+      "status": "failed"
+    },
+    {
+      "id": "m8",
+      "ts": 1790000700000,
+      "fromMe": true,
+      "sender": "+15550000000",
+      "senderId": "p-me",
+      "text": "",
+      "status": "deleted"
+    },
+    {
+      "id": "g1",
+      "ts": 1790000800000,
+      "fromMe": false,
+      "sender": "Grace Hopper",
+      "senderId": "p-grace",
+      "text": "photos from the lake",
+      "status": "received",
+      "attachments": [
+        {
+          "name": "IMG_1.jpg",
+          "kind": "image",
+          "size": 123456
+        },
+        {
+          "name": "clip",
+          "kind": "video",
+          "size": 999
+        },
+        {
+          "name": "voice",
+          "kind": "audio",
+          "size": 42
+        },
+        {
+          "name": "scan.PNG",
+          "kind": "image",
+          "size": 7
+        },
+        {
+          "name": "movie.MOV",
+          "kind": "video",
+          "size": 8
+        },
+        {
+          "name": "invoice.pdf",
+          "kind": "file",
+          "size": 184000
+        }
+      ],
+      "reactions": [
+        "❤️",
+        "😂"
+      ]
+    },
+    {
+      "id": "g2",
+      "ts": 1790000900000,
+      "fromMe": true,
+      "sender": "+15550000000",
+      "senderId": "p-me",
+      "text": "merged, thanks!",
+      "status": "sent"
+    },
+    {
+      "id": "g3",
+      "ts": 1790001000000,
+      "fromMe": false,
+      "sender": "Sam",
+      "senderId": "p-stranger",
+      "text": "Subject only",
+      "status": "received"
+    },
+    {
+      "id": "g4",
+      "ts": 1790001100000,
+      "fromMe": false,
+      "sender": "Linus",
+      "senderId": "p-linus",
+      "text": "body wins",
+      "status": "received"
+    },
+    {
+      "id": "g5",
+      "ts": 1790001200000,
+      "fromMe": true,
+      "sender": "+15550000000",
+      "senderId": "p-me",
+      "text": "sent from the phone",
+      "status": "received"
+    },
+    {
+      "id": "x1",
+      "ts": 1790001300000,
+      "fromMe": false,
+      "sender": "",
+      "senderId": "p-unknown",
+      "text": "no conversation known",
+      "status": "received"
+    },
+    {
+      "id": "x2",
+      "ts": 1790001400000,
+      "fromMe": true,
+      "sender": "",
+      "senderId": "",
+      "text": "",
+      "status": "sent"
+    }
+  ]
+}

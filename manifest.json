@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "id": "omamessages",
+  "name": "Omarchy Messages",
+  "version": "0.1.0",
+  "author": "sabnanikl-dev",
+  "license": "MIT",
+  "description": "Google Messages, WhatsApp and Telegram in one bar icon: a unified inbox with per-service tabs, replies, and desktop notifications.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Omarchy Messages",
+    "description": "All your chats in one panel: a merged inbox, one tab per service, and a reply box that works the same everywhere.",
+    "category": "Communication",
+    "aliases": [
+      "messages",
+      "sms",
+      "whatsapp",
+      "telegram",
+      "omamessages"
+    ],
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": {
+      "notifications": true,
+      "showPreview": true,
+      "providers": "gmessages,telegram,whatsapp",
+      "preview": ""
+    },
+    "schema": [
+      {
+        "key": "notifications",
+        "type": "boolean",
+        "label": "Desktop notifications for new messages",
+        "defaultValue": true
+      },
+      {
+        "key": "showPreview",
+        "type": "boolean",
+        "label": "Show last message preview in the list",
+        "defaultValue": true
+      },
+      {
+        "key": "providers",
+        "type": "string",
+        "label": "Services to run, comma-separated (gmessages, whatsapp, telegram)",
+        "defaultValue": "gmessages,telegram,whatsapp"
+      },
+      {
+        "key": "preview",
+        "type": "string",
+        "label": "Show these services read-only from the old plugin (until cutover)",
+        "defaultValue": ""
+      }
+    ]
+  }
+}
