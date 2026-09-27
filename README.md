@@ -11,6 +11,18 @@ open with one click.
 If you used the older Google Messages-only plugin (gmessages), this one can
 take over its pairing; see [Coming from the gmessages plugin](#coming-from-the-gmessages-plugin).
 
+## Screenshots
+
+All chats in one list, with a tab per service. The service marks (G, T, W)
+show where each chat lives. Made-up demo data.
+
+<p>
+<img src="screenshots/inbox.png" width="24%" alt="Inbox: all services merged, with tabs">
+<img src="screenshots/thread.png" width="24%" alt="A Telegram chat with a photo, a file and a typing indicator">
+<img src="screenshots/accounts.png" width="24%" alt="Accounts: each service's status">
+<img src="screenshots/compose.png" width="24%" alt="New message: pick the service, then the person">
+</p>
+
 ## How it works
 
 A Go daemon (`bin/omamessagesd`) runs each service as a *provider* and mirrors

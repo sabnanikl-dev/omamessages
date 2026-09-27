@@ -33,6 +33,10 @@ var logger zerolog.Logger = zerolog.Nop()
 // doesn't show up in Accounts. Google Messages is added at serve time: live,
 // or as a read-only preview of the old plugin (`--preview gmessages`, or
 // whenever the old daemon is still running, see liveGMessages).
+// demoFactories is set only in `-tags demo` builds (main_demo.go): made-up
+// services for screenshots, started with `serve --demo`.
+var demoFactories func() map[core.ProviderID]core.Factory
+
 var factories = map[core.ProviderID]core.Factory{
 	telegram.ID: telegram.New,
 	whatsapp.ID: whatsapp.New,
@@ -223,12 +227,15 @@ func serve(args []string) {
 	verbose := false
 	notify := true
 	var enabled, preview []core.ProviderID
+	demo := false
 	for i := 0; i < len(args); i++ {
 		switch a := args[i]; {
 		case a == "--verbose" || a == "-v":
 			verbose = true
 		case a == "--no-notify":
 			notify = false
+		case a == "--demo":
+			demo = true
 		case a == "--providers" && i+1 < len(args):
 			i++
 			enabled = parseProviders(args[i])
@@ -263,6 +270,14 @@ func serve(args []string) {
 		}
 		logger.Fatal().Err(err).Msg("Cannot bind control socket")
 	}
+	if demo {
+		if demoFactories == nil {
+			logger.Fatal().Msg("--demo needs a build with -tags demo")
+		}
+		factories = demoFactories()
+		enabled = []core.ProviderID{core.GMessages, core.Telegram, core.WhatsApp}
+		preview = nil
+	}
 	for _, id := range preview {
 		if id != gmessages.ID {
 			logger.Warn().Str("provider", string(id)).Msg("Only gmessages has a preview, ignoring")
@@ -275,7 +290,7 @@ func serve(args []string) {
 			factories[id] = fake.New
 			continue
 		}
-		if id == gmessages.ID && factories[id] == nil {
+		if id == gmessages.ID && factories[id] == nil && !demo {
 			factories[id] = liveGMessages(dir)
 			continue
 		}
