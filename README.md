@@ -8,9 +8,6 @@ notifications named after the service. On Telegram you can also send photos and
 files. Links in messages are clickable, and received photos, videos and files
 open with one click.
 
-If you used the older Google Messages-only plugin (gmessages), this one can
-take over its pairing; see [Coming from the gmessages plugin](#coming-from-the-gmessages-plugin).
-
 ## Screenshots
 
 All chats in one list, with a tab per service. The service marks (G, T, W)
@@ -187,7 +184,6 @@ read-only while the shell runs; restart it after a change).
 | `notifications` | `true` | a desktop notification for each incoming message (muted chats stay quiet) |
 | `showPreview` | `true` | the last message under each name in the list |
 | `providers` | `gmessages,telegram,whatsapp` | the services to run |
-| `preview` | `""` | services to show read-only from the older gmessages plugin (`gmessages`) |
 
 The panel remembers its last tab in `ui.json`.
 
@@ -213,16 +209,6 @@ The panel remembers its last tab in `ui.json`.
 **Disconnect** in Accounts signs that service out and deletes its session, its
 chats and its media from this computer. Nothing is sent anywhere except to the
 services themselves.
-
-## Coming from the gmessages plugin
-
-If the older Google Messages-only plugin is installed and paired, disable it
-first (`omarchy plugin disable <its id>`), then start this one with
-`gmessages` in `providers`. On its first start the daemon copies the pairing
-and cached chats from `~/.local/state/omarchy/gmessages/` (a copy; the old
-folder isn't changed). While the old plugin's daemon is still running, this one
-shows Google Messages read-only instead, so two clients never share one
-pairing.
 
 ## Remove
 

@@ -28,8 +28,7 @@
     "defaults": {
       "notifications": true,
       "showPreview": true,
-      "providers": "gmessages,telegram,whatsapp",
-      "preview": ""
+      "providers": "gmessages,telegram,whatsapp"
     },
     "schema": [
       {
@@ -49,12 +48,6 @@
         "type": "string",
         "label": "Services to run, comma-separated (gmessages, whatsapp, telegram)",
         "defaultValue": "gmessages,telegram,whatsapp"
-      },
-      {
-        "key": "preview",
-        "type": "string",
-        "label": "Show these services read-only from the old plugin (until cutover)",
-        "defaultValue": ""
       }
     ]
   }
