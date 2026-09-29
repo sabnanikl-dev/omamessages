@@ -117,6 +117,7 @@ ColumnLayout {
     }
 
     Text {
+      textFormat: Text.PlainText
       visible: inbox.model.length === 0
       anchors.centerIn: parent
       width: parent.width - Style.space(40)

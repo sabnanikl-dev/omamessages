@@ -18,6 +18,7 @@ Rectangle {
   border.color: ringColor
 
   Text {
+    textFormat: Text.PlainText
     anchors.centerIn: parent
     text: mark.info.letter
     color: "#111111"

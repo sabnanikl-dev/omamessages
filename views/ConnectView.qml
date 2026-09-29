@@ -58,6 +58,7 @@ Item {
 
     // Emoji to tap on the phone
     Text {
+      textFormat: Text.PlainText
       Layout.fillWidth: true
       visible: connect.kind === "emoji"
       text: connect.step ? connect.step.value || "" : ""
@@ -86,6 +87,7 @@ Item {
 
     // Code to type on the phone
     Text {
+      textFormat: Text.PlainText
       Layout.fillWidth: true
       visible: connect.kind === "code"
       text: connect.step ? connect.step.value || "" : ""
@@ -99,6 +101,7 @@ Item {
 
     // The step's own words
     Text {
+      textFormat: Text.PlainText
       Layout.fillWidth: true
       visible: text !== ""
       text: {
@@ -149,6 +152,7 @@ Item {
 
     // Hint, and the QR countdown
     Text {
+      textFormat: Text.PlainText
       Layout.fillWidth: true
       visible: text !== ""
       text: {
@@ -173,6 +177,7 @@ Item {
       visible: !!(connect.step && connect.step.alternatives && connect.step.alternatives.length > 0)
       spacing: Style.space(8)
       Text {
+        textFormat: Text.PlainText
         text: "or use"
         color: connect.ui.dim
         font.family: connect.ui.fontFamily
@@ -181,6 +186,7 @@ Item {
       Repeater {
         model: connect.step && connect.step.alternatives ? connect.step.alternatives : []
         Text {
+          textFormat: Text.PlainText
           required property var modelData
           text: modelData.label
           color: connect.ui.accent

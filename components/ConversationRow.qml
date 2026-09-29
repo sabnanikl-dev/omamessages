@@ -42,6 +42,7 @@ CursorSurface {
       radius: width / 2
       color: row.unread ? Qt.rgba(row.ui.accent.r, row.ui.accent.g, row.ui.accent.b, 0.28) : Qt.rgba(row.ui.foreground.r, row.ui.foreground.g, row.ui.foreground.b, 0.10)
       Text {
+        textFormat: Text.PlainText
         anchors.centerIn: parent
         text: row.conv && row.conv.isGroup ? "󰡉" : Model.initials(row.conv ? row.conv.name : "")
         color: row.ui.foreground

@@ -40,6 +40,7 @@ Rectangle {
       }
     }
     Text {
+      textFormat: Text.PlainText
       visible: !chip.isImage
       text: "󰈔"
       color: chip.ui.dim
@@ -58,6 +59,7 @@ Rectangle {
       anchors.verticalCenter: parent.verticalCenter
     }
     Text {
+      textFormat: Text.PlainText
       text: "✕"
       color: removeMouse.containsMouse ? chip.ui.urgent : chip.ui.faint
       font.family: chip.ui.fontFamily

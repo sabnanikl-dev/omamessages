@@ -179,6 +179,7 @@ ColumnLayout {
   Item { Layout.fillHeight: true }
 
   Text {
+    textFormat: Text.PlainText
     Layout.fillWidth: true
     text: "Disconnecting removes that service's chats from this computer only."
     color: accounts.ui.faint

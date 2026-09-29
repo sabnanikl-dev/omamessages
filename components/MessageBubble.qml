@@ -48,6 +48,7 @@ Item {
     spacing: Style.space(3)
 
     Text {
+      textFormat: Text.PlainText
       visible: bubble.showDay
       anchors.horizontalCenter: parent.horizontalCenter
       topPadding: Style.space(6)
@@ -59,6 +60,7 @@ Item {
     }
 
     Text {
+      textFormat: Text.PlainText
       visible: bubble.showSender
       text: bubble.msg ? (bubble.msg.sender || bubble.msg.senderId) : ""
       color: bubble.ui.dim
@@ -144,6 +146,7 @@ Item {
                   cache: false
                 }
                 Text {
+                  textFormat: Text.PlainText
                   visible: att.modelData.kind === "video"
                   anchors.centerIn: parent
                   text: "󰐊"
@@ -154,6 +157,7 @@ Item {
                   font.pixelSize: Style.font.displayLarge
                 }
                 Text {
+                  textFormat: Text.PlainText
                   visible: att.opening
                   anchors.bottom: parent.bottom
                   anchors.left: parent.left
@@ -173,6 +177,7 @@ Item {
                 visible: !att.hasThumb
                 spacing: Style.space(8)
                 Text {
+                  textFormat: Text.PlainText
                   text: Model.attachmentGlyph(att.modelData.kind)
                   color: bubble.fetchable ? bubble.ui.accent : bubble.ui.foreground
                   font.family: bubble.ui.fontFamily
@@ -191,6 +196,7 @@ Item {
                     elide: Text.ElideMiddle
                   }
                   Text {
+                    textFormat: Text.PlainText
                     visible: text !== ""
                     text: {
                       var parts = []
@@ -289,6 +295,7 @@ Item {
           anchors.right: parent.right
           spacing: Style.space(4)
           Text {
+            textFormat: Text.PlainText
             visible: copiedTimer.running
             text: "copied"
             color: bubble.ui.accent
@@ -296,17 +303,20 @@ Item {
             font.pixelSize: Style.font.caption
           }
           Text {
+            textFormat: Text.PlainText
             visible: !!(bubble.msg && bubble.msg.reactions && bubble.msg.reactions.length > 0)
             text: bubble.msg && bubble.msg.reactions ? bubble.msg.reactions.join(" ") : ""
             font.pixelSize: Style.font.caption
           }
           Text {
+            textFormat: Text.PlainText
             text: bubble.msg ? Model.clock(bubble.msg.ts) : ""
             color: bubble.ui.faint
             font.family: bubble.ui.fontFamily
             font.pixelSize: Style.font.caption
           }
           Text {
+            textFormat: Text.PlainText
             visible: bubble.mine
             text: bubble.msg ? Model.statusGlyph(bubble.msg.status) : ""
             color: bubble.failed ? bubble.ui.urgent : (bubble.msg && bubble.msg.status === "read" ? bubble.ui.accent : bubble.ui.faint)
@@ -318,6 +328,7 @@ Item {
     }
 
     Text {
+      textFormat: Text.PlainText
       visible: !!(bubble.failed && bubble.msg && bubble.msg.statusText)
       anchors.right: parent.right
       text: (bubble.msg && bubble.msg.statusText) || ""

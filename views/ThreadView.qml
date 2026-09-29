@@ -197,6 +197,7 @@ ColumnLayout {
       }
 
       Text {
+        textFormat: Text.PlainText
         visible: thread.gm.messagesLoading && thread.gm.messages.length === 0
         anchors.horizontalCenter: parent.horizontalCenter
         text: "Loading…"
@@ -206,6 +207,7 @@ ColumnLayout {
       }
 
       Text {
+        textFormat: Text.PlainText
         visible: thread.gm.messagesError !== ""
         width: parent.width
         text: thread.gm.messagesError
@@ -232,6 +234,7 @@ ColumnLayout {
       }
 
       Text {
+        textFormat: Text.PlainText
         visible: !!(thread.conv && thread.gm.typingIn(thread.conv.id))
         text: "typing…"
         color: thread.ui.dim

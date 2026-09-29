@@ -255,6 +255,7 @@ Panel {
       color: root.urgent
 
       Text {
+        textFormat: Text.PlainText
         id: badge
         anchors.centerIn: parent
         text: gm.unreadCount > 9 ? "9+" : String(gm.unreadCount)
@@ -335,6 +336,7 @@ Panel {
             radius: width / 2
             color: Qt.rgba(root.accent.r, root.accent.g, root.accent.b, 0.18)
             Text {
+              textFormat: Text.PlainText
               anchors.centerIn: parent
               text: root.activeConversation ? Model.initials(root.activeConversation.name) : ""
               color: root.foreground
@@ -444,6 +446,7 @@ Panel {
           Layout.fillHeight: true
 
           Text {
+            textFormat: Text.PlainText
             anchors.centerIn: parent
             width: parent.width - Style.space(40)
             visible: gm.binaryMissing
@@ -501,6 +504,7 @@ Panel {
 
         // Footer hints -----------------------------------------------------------
         Text {
+          textFormat: Text.PlainText
           Layout.fillWidth: true
           visible: root.view === "list" || root.view === "accounts" || root.view === "connect"
           text: root.view === "accounts" ? "j/k move · Enter connect/disconnect · Esc back"

@@ -90,6 +90,7 @@ ColumnLayout {
 
   // Nothing to send with
   Text {
+    textFormat: Text.PlainText
     Layout.fillWidth: true
     visible: compose.services.length === 0
     text: "Connect a service first."
@@ -139,6 +140,7 @@ ColumnLayout {
             anchors.verticalCenter: parent.verticalCenter
           }
           Text {
+            textFormat: Text.PlainText
             text: Model.serviceName(parent.parent.modelData.id, parent.parent.modelData.name)
             color: parent.parent.current ? compose.ui.foreground : compose.ui.dim
             font.family: compose.ui.fontFamily
