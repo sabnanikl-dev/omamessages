@@ -151,9 +151,12 @@ func convertMessage(conv *core.Conversation, m *gmproto.Message) core.Message {
 			}
 		case *gmproto.MessageInfo_MediaContent:
 			out.Attachments = append(out.Attachments, core.Attachment{
-				Name: d.MediaContent.GetMediaName(),
-				Kind: mediaKind(d.MediaContent.GetFormat(), d.MediaContent.GetMediaName()),
-				Size: d.MediaContent.GetSize(),
+				Name:   d.MediaContent.GetMediaName(),
+				Kind:   mediaKind(d.MediaContent.GetFormat(), d.MediaContent.GetMediaName()),
+				Size:   d.MediaContent.GetSize(),
+				Mime:   d.MediaContent.GetMimeType(),
+				Width:  int(d.MediaContent.GetDimensions().GetWidth()),
+				Height: int(d.MediaContent.GetDimensions().GetHeight()),
 			})
 		}
 	}

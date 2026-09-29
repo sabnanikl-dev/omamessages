@@ -59,6 +59,9 @@ type GMessages struct {
 	cursors map[string]*gmproto.Cursor
 	// last answer to "is Messages the default SMS app", nil until probed
 	smsDefault *bool
+	// attachment previews and downloads (media.go)
+	mediaInit sync.Once
+	mstate    *mediaState
 }
 
 func New(env core.Env) core.Provider {
@@ -74,7 +77,7 @@ func New(env core.Env) core.Provider {
 func (g *GMessages) ID() core.ProviderID { return ID }
 func (g *GMessages) Name() string        { return "Messages" }
 func (g *GMessages) Caps() core.Caps {
-	return core.Caps{StartByNumber: true, ContactSearch: true, Typing: true, Reactions: true, LoadHistory: true, PhoneTethered: true}
+	return core.Caps{StartByNumber: true, ContactSearch: true, Typing: true, Reactions: true, LoadHistory: true, PhoneTethered: true, FetchMedia: true}
 }
 
 func (g *GMessages) sessionPath() string { return filepath.Join(g.env.Dir, "session.json") }
@@ -736,6 +739,7 @@ func (g *GMessages) handleMessage(evt *libgm.WrappedMessage) {
 	convID := evt.GetConversationID()
 	conv := g.store.Conversation(convID)
 	msg := convertMessage(conv, evt.Message)
+	g.noteMedia(convID, evt.Message, &msg)
 	if g.store.HasMessages(convID) {
 		g.store.UpsertMessage(convID, msg)
 	}
@@ -835,6 +839,7 @@ func (g *GMessages) Open(ctx context.Context, convID string, markRead bool) erro
 		}
 		for _, raw := range resp.GetMessages() {
 			m := convertMessage(conv, raw)
+			g.noteMedia(convID, raw, &m)
 			existing[m.ID] = m
 		}
 		cm.Messages = cm.Messages[:0]
@@ -909,6 +914,7 @@ func (g *GMessages) More(ctx context.Context, convID string) error {
 		}
 		for _, raw := range resp.GetMessages() {
 			m := convertMessage(conv, raw)
+			g.noteMedia(convID, raw, &m)
 			if !seen[m.ID] {
 				cm.Messages = append(cm.Messages, m)
 			}
@@ -1068,8 +1074,4 @@ func matchContacts(contacts []*gmproto.Contact, query string) []core.Participant
 		out = append(out, core.Participant{ID: num, Name: name, Number: num})
 	}
 	return out
-}
-
-func (g *GMessages) FetchMedia(ctx context.Context, convID, msgID string, idx int) (string, error) {
-	return "", core.ErrUnsupported
 }
